@@ -1,6 +1,7 @@
 import ConfigureStore from "./store/ConfigureStore";
-import {BugAdded, BugRemoved, BugResolved} from "./store/Bug";
-
+import {BugAdded, BugResolved, unResolvedBug, BugAssignedToUser, getBugByUSers} from "./store/Bug";
+import {ProjectAdded} from "./store/Project";
+import { UserAdded } from "./store/Users";
 const Store = ConfigureStore();
 
 // console.log(Store);
@@ -8,19 +9,29 @@ const Store = ConfigureStore();
 // This occur when somthing changed from the store.
 const UnSubscribe = Store.subscribe(()=>console.log("State Changes"));
 
-Store.dispatch(BugAdded("Bug 1"));
+
+Store.dispatch(UserAdded({name:"User 1"}));
+Store.dispatch(UserAdded({name:"User 2"}));
+
+Store.dispatch(ProjectAdded({name:"Project 1"}));
+
+Store.dispatch(BugAdded({Description:"Bug 1"}));
 UnSubscribe();
-Store.dispatch(BugAdded("Bug 2"));
+Store.dispatch(BugAdded({Description:"Bug 2"}));
+Store.dispatch(BugAdded({Description:"Bug 3"}));
 
+Store.dispatch(BugAssignedToUser({bugId:1, userId:1}));
+Store.dispatch(BugAssignedToUser({bugId:2, userId:1}))
 
+const UserBugs = getBugByUSers(1)(Store.getState());
+console.log(UserBugs) ;
 // Here we are giving ID.
-Store.dispatch(BugResolved(2));
+Store.dispatch(BugResolved({ID:2}));
+// Store.dispatch(BugRemoved(1));
 
-
-
-Store.dispatch(BugRemoved(1));
-
-console.log(Store.getState());
+const x = unResolvedBug(Store.getState());
+const y = unResolvedBug(Store.getState());
+console.log(x===y);
 
 
 
